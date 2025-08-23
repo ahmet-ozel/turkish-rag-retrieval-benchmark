@@ -47,12 +47,11 @@ dense_models = {
     "Qwen3-Embedding"        : "Qwen/Qwen3-Embedding-0.6B",
     "msbayindir/turkish-legal": "msbayindir/turkish-legal-bert-base-uncased-stsb-v1-sts",
     "fkuyumcu/turkish"       : "fkuyumcu/turkish-wiki-rag-embeddings-v2",
-    "jinaai"                 : "jinaai/jina-embeddings-v3",
     "MiniLM"                 : "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
     "eneSadi"                : "eneSadi/turkuaz-embeddings",
-    "Alibaba"                : "Alibaba-NLP/gte-multilingual-base",
     "multilingual_e5_large"  : "intfloat/multilingual-e5-large-instruct",
 }
+
 
 print("\n► Modeller indiriliyor / doğrulanıyor …")
 ok_models = {}
@@ -290,3 +289,4 @@ for ds_name in datasets_to_run:
     plt.legend(); plt.tight_layout(); plt.show()
 
 print("\n✓ Tüm işlemler tamamlandı.")
+

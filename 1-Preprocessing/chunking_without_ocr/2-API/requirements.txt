@@ -1,0 +1,34 @@
+# FastAPI ve async server
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+python-multipart==0.0.6
+
+# Async işlemler
+aiofiles==23.2.1
+
+# Doküman işleme
+pypdf==3.17.0
+python-docx==1.1.0
+pandas==2.1.3
+openpyxl==3.1.2
+chardet==5.2.0
+
+# API modelleri ve validasyon
+pydantic==2.4.2
+pydantic-settings==2.0.3
+
+# Production deployment için
+gunicorn==21.2.0
+
+# Monitoring ve logging (opsiyonel)
+prometheus-fastapi-instrumentator==6.1.0
+python-json-logger==2.0.7
+
+# Redis cache desteği (opsiyonel, production için)
+redis==5.0.1
+celery==5.3.4
+
+# Test araçları (development için)
+pytest==7.4.3
+pytest-asyncio==0.21.1
+httpx==0.25.1

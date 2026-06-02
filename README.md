@@ -5,39 +5,39 @@
 [![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)](https://docker.com)
 [![Sentence Transformers](https://img.shields.io/badge/Embeddings-Sentence_Transformers-FFB000)](https://www.sbert.net)
 
-Türkçe metinler üzerinde uçtan uca bir RAG (Retrieval-Augmented Generation) ön işleme ve retrieval hattı. Doküman parçalama (chunking), embedding tabanlı benzerlik araması ve yeniden sıralama (reranking) adımlarını içerir; ayrıca **25+ embedding/retrieval modelini** Türkçe retrieval başarımına göre karşılaştıran bir benchmark sunar.
+An end-to-end RAG (Retrieval-Augmented Generation) preprocessing and retrieval pipeline for Turkish text. It covers document chunking, embedding-based similarity search and reranking, and includes a benchmark comparing **25+ embedding/retrieval models** on Turkish retrieval performance.
 
-## 🎯 Öne Çıkanlar
+## 🎯 Highlights
 
-- **Chunking pipeline** — PDF, DOCX, TXT, CSV, Excel dosyalarını anlamlı parçalara böler (OCR'lı ve OCR'sız iki yol)
-- **Üretime hazır FastAPI servisi** — Docker, nginx ve rate limiting ile chunking API'si
-- **Geniş model karşılaştırması** — dense embedding'ler (bge-m3, e5, LaBSE, Qwen3 vb.), Türkçe modeller ve klasik yöntemler (BM25, TF-IDF, Jaccard)
-- **Reranking & sentence similarity** — ColBERT tabanlı yeniden sıralama ve özellik çıkarımı
+- **Chunking pipeline** — splits PDF, DOCX, TXT, CSV and Excel files into meaningful chunks (with and without OCR)
+- **Production-ready FastAPI service** — a chunking API with Docker, nginx and rate limiting
+- **Broad model comparison** — dense embeddings (bge-m3, e5, LaBSE, Qwen3, etc.), Turkish-specific models, and classic methods (BM25, TF-IDF, Jaccard)
+- **Reranking & sentence similarity** — ColBERT-based reranking and feature extraction
 
-## 📁 Proje Yapısı
+## 📁 Project Structure
 
 ```
 1-Preprocessing/
-├── chunking_with_ocr/        # Taranmış belgeler için OCR'lı chunking
+├── chunking_with_ocr/        # OCR-based chunking for scanned documents
 └── chunking_without_ocr/
-    ├── chunking.py           # Temel chunking mantığı
-    └── 2-API/                # FastAPI tabanlı chunking servisi (Docker + nginx)
+    ├── chunking.py           # Core chunking logic
+    └── 2-API/                # FastAPI-based chunking service (Docker + nginx)
 2-Merge Chunks/
-└── merge.py                  # Parçaların birleştirilmesi
+└── merge.py                  # Merging of chunks
 3-Similar Chunks/
-├── Sentence Similarty Model/ # ColBERT tabanlı benzerlik
-├── Reranking/                # Sonuçların yeniden sıralanması
+├── Sentence Similarty Model/ # ColBERT-based similarity
+├── Reranking/                # Reranking of results
 ├── Finetune Feature extraction/
 └── Text Based and Feature extraction/
 ```
 
-## ⚙️ Hattın Adımları
+## ⚙️ Pipeline Steps
 
-1. **Ön İşleme (Preprocessing)** — Ham dokümanlardan metin çıkarımı (gerekirse OCR), temizleme ve chunking
-2. **Birleştirme (Merge)** — Chunk'ların düzenlenmesi/birleştirilmesi
-3. **Benzerlik (Similar Chunks)** — Embedding ile en yakın chunk'ların bulunması, reranking ile iyileştirme
+1. **Preprocessing** — Text extraction from raw documents (OCR when needed), cleaning and chunking
+2. **Merge** — Organizing/merging the chunks
+3. **Similar Chunks** — Finding the nearest chunks via embeddings, improving results with reranking
 
-## 🚀 Hızlı Başlangıç (Chunking API)
+## 🚀 Quick Start (Chunking API)
 
 ```bash
 cd "1-Preprocessing/chunking_without_ocr/2-API"
@@ -48,15 +48,15 @@ uvicorn main:app --reload
 - API: `http://localhost:8000`
 - Swagger UI: `http://localhost:8000/docs`
 
-Docker ile:
+With Docker:
 
 ```bash
 docker-compose up -d
 ```
 
-## 📊 Model Doğruluk Karşılaştırmaları
+## 📊 Model Accuracy Comparison
 
-Türkçe bir retrieval test kümesinde farklı modellerin Top-1 / Top-5 / Top-10 doğruluk skorları. En iyi sonuçları **bge_m3** ve **bge_m3_turkish** (Top-1 ≈ 0.76) verirken, klasik BM25/TF-IDF yöntemleri makul bir temel çizgi (baseline) oluşturuyor.
+Top-1 / Top-5 / Top-10 accuracy scores of different models on a Turkish retrieval test set. The best results come from **bge_m3** and **bge_m3_turkish** (Top-1 ≈ 0.76), while classic BM25/TF-IDF methods provide a reasonable baseline.
 
 | Model                     | Top-1 | Top-5 | Top-10 |
 |---------------------------|-------|-------|--------|
@@ -86,15 +86,15 @@ Türkçe bir retrieval test kümesinde farklı modellerin Top-1 / Top-5 / Top-10
 | jacc_word                 | 0.127 | 0.270 | 0.365  |
 | jacc_bert                 | 0.317 | 0.556 | 0.619  |
 
-> Top-K: doğru chunk'ın ilk K sonuç içinde bulunma oranı. Değerler kullanılan test kümesine özeldir.
+> Top-K: the rate at which the correct chunk appears within the first K results. Values are specific to the test set used.
 
-## 🧰 Teknoloji Yığını
+## 🧰 Tech Stack
 
 - **Python**, **FastAPI**, **Docker**, **nginx**
-- **Sentence Transformers** / dense embedding modelleri
+- **Sentence Transformers** / dense embedding models
 - **BM25**, **TF-IDF**, **ColBERT** (reranking)
-- Doküman işleme: PDF / DOCX / CSV / Excel
+- Document processing: PDF / DOCX / CSV / Excel
 
-## 📝 Not
+## 📝 Note
 
-Bu çalışma, Türkçe RAG sistemlerinde hangi retrieval yönteminin daha iyi sonuç verdiğini deneysel olarak araştırmak için hazırlanmıştır. Skorlar kullanılan veri kümesine bağlıdır ve farklı verilerde değişebilir.
+This work was built to experimentally investigate which retrieval method performs best in Turkish RAG systems. Scores depend on the dataset used and may vary with different data.

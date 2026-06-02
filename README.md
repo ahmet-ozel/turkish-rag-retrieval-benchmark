@@ -1,4 +1,4 @@
-# Turkish RAG Retrieval Benchmark & Pipeline
+﻿# Turkish RAG Retrieval Benchmark & Pipeline
 
 [![Python](https://img.shields.io/badge/Python-3.11+-3776AB?logo=python&logoColor=white)](https://python.org)
 [![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
@@ -7,14 +7,14 @@
 
 An end-to-end RAG (Retrieval-Augmented Generation) preprocessing and retrieval pipeline for Turkish text. It covers document chunking, embedding-based similarity search and reranking, and includes a benchmark comparing **25+ embedding/retrieval models** on Turkish retrieval performance.
 
-## 🎯 Highlights
+## Highlights
 
 - **Chunking pipeline** — splits PDF, DOCX, TXT, CSV and Excel files into meaningful chunks (with and without OCR)
 - **Production-ready FastAPI service** — a chunking API with Docker, nginx and rate limiting
 - **Broad model comparison** — dense embeddings (bge-m3, e5, LaBSE, Qwen3, etc.), Turkish-specific models, and classic methods (BM25, TF-IDF, Jaccard)
 - **Reranking & sentence similarity** — ColBERT-based reranking and feature extraction
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 1-Preprocessing/
@@ -31,13 +31,13 @@ An end-to-end RAG (Retrieval-Augmented Generation) preprocessing and retrieval p
 └── Text Based and Feature extraction/
 ```
 
-## ⚙️ Pipeline Steps
+## Pipeline Steps
 
 1. **Preprocessing** — Text extraction from raw documents (OCR when needed), cleaning and chunking
 2. **Merge** — Organizing/merging the chunks
 3. **Similar Chunks** — Finding the nearest chunks via embeddings, improving results with reranking
 
-## 🚀 Quick Start (Chunking API)
+## Quick Start (Chunking API)
 
 ```bash
 cd "1-Preprocessing/chunking_without_ocr/2-API"
@@ -54,7 +54,7 @@ With Docker:
 docker-compose up -d
 ```
 
-## 📊 Model Accuracy Comparison
+## Model Accuracy Comparison
 
 Top-1 / Top-5 / Top-10 accuracy scores of different models on a Turkish retrieval test set. The best results come from **bge_m3** and **bge_m3_turkish** (Top-1 ≈ 0.76), while classic BM25/TF-IDF methods provide a reasonable baseline.
 
@@ -88,13 +88,13 @@ Top-1 / Top-5 / Top-10 accuracy scores of different models on a Turkish retrieva
 
 > Top-K: the rate at which the correct chunk appears within the first K results. Values are specific to the test set used.
 
-## 🧰 Tech Stack
+## Tech Stack
 
 - **Python**, **FastAPI**, **Docker**, **nginx**
 - **Sentence Transformers** / dense embedding models
 - **BM25**, **TF-IDF**, **ColBERT** (reranking)
 - Document processing: PDF / DOCX / CSV / Excel
 
-## 📝 Note
+## Note
 
 This work was built to experimentally investigate which retrieval method performs best in Turkish RAG systems. Scores depend on the dataset used and may vary with different data.

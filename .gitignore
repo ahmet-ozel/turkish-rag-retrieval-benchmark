@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+.Python
+env/
+venv/
+.venv/
+
+# Environment / secrets
+.env
+*.local.env
+
+# Models / data / caches
+*.bin
+*.pt
+*.safetensors
+.cache/
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

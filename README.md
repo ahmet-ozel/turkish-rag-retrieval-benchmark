@@ -9,10 +9,10 @@ An end-to-end RAG (Retrieval-Augmented Generation) preprocessing and retrieval p
 
 ## Highlights
 
-- **Chunking pipeline** — splits PDF, DOCX, TXT, CSV and Excel files into meaningful chunks (with and without OCR)
-- **Production-ready FastAPI service** — a chunking API with Docker, nginx and rate limiting
-- **Broad model comparison** — dense embeddings (bge-m3, e5, LaBSE, Qwen3, etc.), Turkish-specific models, and classic methods (BM25, TF-IDF, Jaccard)
-- **Reranking & sentence similarity** — ColBERT-based reranking and feature extraction
+- **Chunking pipeline** - splits PDF, DOCX, TXT, CSV and Excel files into meaningful chunks (with and without OCR)
+- **Production-ready FastAPI service** - a chunking API with Docker, nginx and rate limiting
+- **Broad model comparison** - dense embeddings (bge-m3, e5, LaBSE, Qwen3, etc.), Turkish-specific models, and classic methods (BM25, TF-IDF, Jaccard)
+- **Reranking & sentence similarity** - ColBERT-based reranking and feature extraction
 
 ## Project Structure
 
@@ -33,9 +33,9 @@ An end-to-end RAG (Retrieval-Augmented Generation) preprocessing and retrieval p
 
 ## Pipeline Steps
 
-1. **Preprocessing** — Text extraction from raw documents (OCR when needed), cleaning and chunking
-2. **Merge** — Organizing/merging the chunks
-3. **Similar Chunks** — Finding the nearest chunks via embeddings, improving results with reranking
+1. **Preprocessing** - Text extraction from raw documents (OCR when needed), cleaning and chunking
+2. **Merge** - Organizing/merging the chunks
+3. **Similar Chunks** - Finding the nearest chunks via embeddings, improving results with reranking
 
 ## Quick Start (Chunking API)
 

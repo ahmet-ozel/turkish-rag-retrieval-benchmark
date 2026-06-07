@@ -23,7 +23,7 @@ from transformers import Qwen2VLForConditionalGeneration, AutoProcessor
 # =========================
 st.set_page_config(
     page_title="Doküman Chunking (OCR'lı)",
-    page_icon="📄",
+    page_icon="",
     layout="wide"
 )
 
@@ -68,7 +68,7 @@ st.markdown("""
 # =========================
 # Başlık
 # =========================
-st.title("📄 Gelişmiş Doküman Chunking (Qwen2.5-VL OCR)")
+st.title(" Gelişmiş Doküman Chunking (Qwen2.5-VL OCR)")
 st.markdown("### PDF/DOCX/görsel dosyalarınızı OCR ile okuyup anlamlı parçalara bölün")
 
 # =========================
@@ -503,7 +503,7 @@ def display_chunks(all_chunks: List[Dict]):
     if not all_chunks:
         return
 
-    st.markdown("### 📊 Chunk İstatistikleri")
+    st.markdown("###  Chunk İstatistikleri")
 
     file_stats = {}
     for chunk in all_chunks:
@@ -525,9 +525,9 @@ def display_chunks(all_chunks: List[Dict]):
         total_chars = sum(len(c.get('text', '')) for c in all_chunks)
         st.metric("Toplam Karakter", f"{total_chars:,}")
 
-    st.markdown("#### 📁 Dosya Detayları")
+    st.markdown("####  Dosya Detayları")
     for filename, stats in file_stats.items():
-        with st.expander(f"📄 {filename}"):
+        with st.expander(f" {filename}"):
             col1, col2, col3 = st.columns(3)
             with col1:
                 st.metric("Chunk Sayısı", stats['count'])
@@ -538,13 +538,13 @@ def display_chunks(all_chunks: List[Dict]):
                 st.metric("Ortalama", f"{avg:.0f} kar.")
 
     st.markdown("---")
-    st.markdown("### 📝 Oluşturulan Chunk'lar")
+    st.markdown("###  Oluşturulan Chunk'lar")
 
     col1, col2 = st.columns([2, 1])
     with col1:
-        search_term = st.text_input("🔍 Chunk'larda ara:", "")
+        search_term = st.text_input(" Chunk'larda ara:", "")
     with col2:
-        selected_file = st.selectbox("📁 Dosya filtresi:", ["Tümü"] + list(file_stats.keys()))
+        selected_file = st.selectbox(" Dosya filtresi:", ["Tümü"] + list(file_stats.keys()))
 
     col1, col2, col3 = st.columns(3)
     with col1:
@@ -565,7 +565,7 @@ def display_chunks(all_chunks: List[Dict]):
         filtered.append((i, chunk))
 
     if filtered:
-        st.info(f"📌 {len(filtered)} chunk gösteriliyor")
+        st.info(f" {len(filtered)} chunk gösteriliyor")
         chunks_per_page = 10
         total_pages = (len(filtered) - 1) // chunks_per_page + 1
         page = st.slider("Sayfa", 1, total_pages, 1) if total_pages > 1 else 1
@@ -575,7 +575,7 @@ def display_chunks(all_chunks: List[Dict]):
         for idx, chunk in filtered[start_idx:end_idx]:
             with st.expander(f"Chunk {idx} - {chunk.get('filename', 'Bilinmeyen')} ({len(chunk.get('text', ''))} karakter)"):
                 if show_metadata:
-                    st.markdown("**📋 Metadata:**")
+                    st.markdown("** Metadata:**")
                     mcols = st.columns(4)
                     with mcols[0]:
                         st.caption(f"ID: {idx}")
@@ -589,11 +589,11 @@ def display_chunks(all_chunks: List[Dict]):
                 if show_columns:
                     coldata = {k: v for k, v in chunk.items() if k not in ['text', 'filename', 'chunk_id', 'length']}
                     if coldata:
-                        st.markdown("**🏷️ Sütun Verileri:**")
+                        st.markdown("** Sütun Verileri:**")
                         for k, v in coldata.items():
                             st.write(f"• **{k}:** {v}")
 
-                st.markdown("**📝 İçerik:**")
+                st.markdown("** İçerik:**")
                 text_to_show = chunk.get('text', '')
                 if show_preview_only and len(text_to_show) > 500:
                     text_to_show = text_to_show[:500] + "..."
@@ -653,7 +653,7 @@ def export_chunks(chunks: List[Dict], format: str):
 # UI - Sidebar
 # =========================
 with st.sidebar:
-    st.header("⚙️ Chunking & OCR Ayarları")
+    st.header(" Chunking & OCR Ayarları")
 
     uploaded_files = st.file_uploader(
         "Dosya(lar) Seçin",
@@ -663,14 +663,14 @@ with st.sidebar:
     )
 
     if uploaded_files:
-        st.info(f"📁 {len(uploaded_files)} dosya yüklendi")
+        st.info(f" {len(uploaded_files)} dosya yüklendi")
         for file in uploaded_files:
             st.caption(f"• {file.name}")
 
     st.markdown("---")
 
     # OCR
-    ocr_enabled = st.checkbox("🧠 OCR (Qwen2.5-VL) kullan", value=True,
+    ocr_enabled = st.checkbox(" OCR (Qwen2.5-VL) kullan", value=True,
                               help="PDF/DOCX sayfa/görsellerini görüntü tabanlı modelle oku")
     ocr_mode_label = st.selectbox(
         "OCR modu",
@@ -693,7 +693,7 @@ with st.sidebar:
     st.markdown("---")
 
     include_columns_in_text = st.checkbox(
-        "📊 Sütun başlıklarını text alanına ekle (CSV/Excel)",
+        " Sütun başlıklarını text alanına ekle (CSV/Excel)",
         value=False,
         help="CSV/Excel dosyalarında sütun adlarını text alanına ekler. Not: Sütunlar her zaman JSON çıktısına eklenir."
     )
@@ -725,9 +725,9 @@ with st.sidebar:
     st.markdown("---")
     col1, col2 = st.columns(2)
     with col1:
-        process_button = st.button("🚀 Chunk'lara Böl", type="primary", use_container_width=True)
+        process_button = st.button(" Chunk'lara Böl", type="primary", use_container_width=True)
     with col2:
-        clear_button = st.button("🗑️ Temizle", type="secondary", use_container_width=True)
+        clear_button = st.button(" Temizle", type="secondary", use_container_width=True)
 
     if clear_button:
         st.session_state.all_chunks = []
@@ -776,18 +776,18 @@ with st.sidebar:
             st.session_state.processed_files = processed_files
 
             if all_chunks:
-                st.success(f"✅ {len(processed_files)} dosya işlendi, {len(all_chunks)} chunk oluşturuldu!")
+                st.success(f" {len(processed_files)} dosya işlendi, {len(all_chunks)} chunk oluşturuldu!")
             if errors:
                 for error in errors:
-                    st.error(f"❌ {error}")
+                    st.error(f" {error}")
         else:
             st.warning("Lütfen en az bir dosya yükleyin!")
 
     if st.session_state.all_chunks:
         st.markdown("---")
-        st.header("💾 Dışa Aktar")
+        st.header(" Dışa Aktar")
         export_format = st.selectbox("Format Seçin", ["JSON", "TXT", "CSV"], help="JSON formatı tüm sütun bilgilerini içerir")
-        if st.button("📥 İndir", use_container_width=True):
+        if st.button(" İndir", use_container_width=True):
             export_data = export_chunks(st.session_state.all_chunks, export_format)
             if export_format == "JSON":
                 file_name = "chunks.json"; mime = "application/json"
@@ -797,7 +797,7 @@ with st.sidebar:
                 file_name = "chunks.csv"; mime = "text/csv"
 
             st.download_button(
-                label=f"💾 {export_format} olarak indir",
+                label=f" {export_format} olarak indir",
                 data=export_data,
                 file_name=file_name,
                 mime=mime,
@@ -811,20 +811,20 @@ if st.session_state.all_chunks:
     display_chunks(st.session_state.all_chunks)
 else:
     st.markdown("""
-    ### 👋 Hoş Geldiniz!
+    ### Hoş Geldiniz!
 
     Bu uygulama ile:
-    - 📄 **PDF/DOCX/görselleri OCR** ile okuyabilir
-    - ✂️ **Farklı yöntemlerle** chunk'lara bölebilir
-    - 📊 **CSV/Excel sütunlarını** otomatik JSON'a ekleyebilir
-    - 💾 **Sonuçları** JSON, TXT veya CSV olarak indirebilirsiniz
+    - **PDF/DOCX/görselleri OCR** ile okuyabilir
+    - **Farklı yöntemlerle** chunk'lara bölebilir
+    - **CSV/Excel sütunlarını** otomatik JSON'a ekleyebilir
+    - **Sonuçları** JSON, TXT veya CSV olarak indirebilirsiniz
 
     **Başlamak için:**
     1. Sol panelden dosyalarınızı yükleyin
     2. OCR ve chunking ayarlarını belirleyin
     3. "Chunk'lara Böl" butonuna tıklayın
     """)
-    with st.expander("📋 Örnek (CSV)"):
+    with st.expander(" Örnek (CSV)"):
         sample_df = pd.DataFrame({
             'MüşteriID': ['C001', 'C002', 'C003'],
             'Ad': ['Ahmet', 'Ayşe', 'Mehmet'],
@@ -837,7 +837,7 @@ else:
 st.markdown("---")
 st.markdown("""
 <div style='text-align: center; color: #666;'>
-    <small>📄 Gelişmiş Doküman Chunking (OCR) v4.0 - Qwen/Qwen2.5-VL-7B-Instruct entegrasyonu</small>
+    <small> Gelişmiş Doküman Chunking (OCR) v4.0 - Qwen/Qwen2.5-VL-7B-Instruct entegrasyonu</small>
 </div>
 """, unsafe_allow_html=True)
 

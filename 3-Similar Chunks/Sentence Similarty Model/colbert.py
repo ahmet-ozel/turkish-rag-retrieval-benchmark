@@ -1,10 +1,10 @@
 # streamlit_app.py
 # -----------------------------------------------------------
 # Gereksinimler:
-#   pip install streamlit torch colbert-ai requests
-#   (vLLM sunucusu:  google/gemma-3-12b-it  --port 8008  --serve)
+# pip install streamlit torch colbert-ai requests
+# (vLLM sunucusu:  google/gemma-3-12b-it  --port 8008  --serve)
 # Çalıştırmak için:
-#   streamlit run streamlit_app.py
+# streamlit run streamlit_app.py
 # -----------------------------------------------------------
 
 import json
@@ -79,9 +79,9 @@ def build_prompt(query, contexts):
 
 # ---------- Streamlit UI -----------------------------------------------------
 
-st.title("🔍📚  ColBERT + vLLM Soru‑Cevap Demo (TR)")
+st.title("  ColBERT + vLLM Soru‑Cevap Demo (TR)")
 
-st.sidebar.header("🚀 Adımlar")
+st.sidebar.header(" Adımlar")
 st.sidebar.markdown(
     "1. JSON dosyanızı yükleyin\n"
     "2. Sorgu yazın\n"
@@ -92,7 +92,7 @@ uploaded_json = st.file_uploader("JSON dosyanızı seçin", type=["json"])
 query_input = st.text_input("Sorgu", placeholder="Bilim insanları hakkında sorunuz...")
 
 top_k = st.slider("Kaç bağlam (chunk) kullanılsın?", 5, 20, 15)
-if st.button("🧠 Cevabı Al"):
+if st.button(" Cevabı Al"):
 
     if not uploaded_json:
         st.error("Lütfen önce bir JSON dosyası yükleyin.")
@@ -101,19 +101,19 @@ if st.button("🧠 Cevabı Al"):
         st.error("Lütfen bir sorgu girin.")
         st.stop()
 
-    with st.spinner("🔎 Dokümanlar taranıyor..."):
+    with st.spinner(" Dokümanlar taranıyor..."):
         ckpt = load_colbert_model()
         docs = load_chunks_from_json(uploaded_json)
         top_chunks_scores = retrieve_top_k(query_input, docs, ckpt, k=top_k)
         top_chunks = [text for text, _ in top_chunks_scores]
 
-    st.success(f"En benzer {top_k} parça bulundu ✅")
+    st.success(f"En benzer {top_k} parça bulundu ")
 
-    with st.expander("🔍 Görüntülenen bağlam parçaları"):
+    with st.expander(" Görüntülenen bağlam parçaları"):
         for i, (chunk, score) in enumerate(top_chunks_scores, 1):
             st.markdown(f"**{i}. ({score:.2f})**  {chunk}")
 
-    with st.spinner("💬 vLLM modelinden yanıt alınıyor..."):
+    with st.spinner(" vLLM modelinden yanıt alınıyor..."):
         prompt = build_prompt(query_input, top_chunks)
         try:
             answer = call_vllm_model(prompt)
@@ -121,5 +121,5 @@ if st.button("🧠 Cevabı Al"):
             st.error(f"Model isteği başarısız: {e}")
             st.stop()
 
-    st.subheader("📝 Yanıt")
+    st.subheader(" Yanıt")
     st.write(answer)

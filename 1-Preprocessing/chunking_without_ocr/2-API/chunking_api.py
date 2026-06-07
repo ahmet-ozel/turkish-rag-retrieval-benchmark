@@ -7,15 +7,15 @@ import os
 
 class ChunkingProcessor:
     """Doküman chunking işlemlerini yöneten sınıf"""
-    
+
     def __init__(self):
         self.supported_formats = ['txt', 'pdf', 'docx', 'csv', 'xlsx', 'xls']
-    
+
     def detect_encoding(self, file_bytes: bytes) -> str:
         """Dosya encoding'ini tespit et"""
         result = chardet.detect(file_bytes)
         return result['encoding'] if result['encoding'] else 'utf-8'
-    
+
     def read_pdf(self, file_path: str) -> Tuple[str, Optional[pd.DataFrame], Optional[List[str]]]:
         """PDF dosyasını oku"""
         try:
@@ -27,7 +27,7 @@ class ChunkingProcessor:
                 return text, None, None
         except Exception as e:
             raise Exception(f"PDF okuma hatası: {str(e)}")
-    
+
     def read_docx(self, file_path: str) -> Tuple[str, Optional[pd.DataFrame], Optional[List[str]]]:
         """DOCX dosyasını oku"""
         try:
@@ -38,7 +38,7 @@ class ChunkingProcessor:
             return text, None, None
         except Exception as e:
             raise Exception(f"DOCX okuma hatası: {str(e)}")
-    
+
     def read_txt(self, file_path: str) -> Tuple[str, Optional[pd.DataFrame], Optional[List[str]]]:
         """TXT dosyasını oku"""
         try:
@@ -52,7 +52,7 @@ class ChunkingProcessor:
                 return text, None, None
         except Exception as e:
             raise Exception(f"TXT okuma hatası: {str(e)}")
-    
+
     def read_csv(self, file_path: str) -> Tuple[str, Optional[pd.DataFrame], Optional[List[str]]]:
         """CSV dosyasını oku ve sütun bilgilerini sakla"""
         try:
@@ -62,7 +62,7 @@ class ChunkingProcessor:
             return text, df, columns
         except Exception as e:
             raise Exception(f"CSV okuma hatası: {str(e)}")
-    
+
     def read_excel(self, file_path: str) -> Tuple[str, Optional[pd.DataFrame], Optional[List[str]]]:
         """Excel dosyasını oku ve sütun bilgilerini sakla"""
         try:
@@ -72,29 +72,29 @@ class ChunkingProcessor:
             return text, df, columns
         except Exception as e:
             raise Exception(f"Excel okuma hatası: {str(e)}")
-    
+
     def create_chunks_with_columns(
-        self, 
-        df: pd.DataFrame, 
-        columns: List[str], 
-        chunk_method: str, 
-        chunk_size: int = 500, 
-        chunk_overlap: int = 50, 
+        self,
+        df: pd.DataFrame,
+        columns: List[str],
+        chunk_method: str,
+        chunk_size: int = 500,
+        chunk_overlap: int = 50,
         separator: str = "\n\n",
         include_columns_in_text: bool = False
     ) -> List[Dict[str, Any]]:
         """DataFrame'den sütun bilgileriyle chunk'lar oluştur"""
         chunks = []
-        
+
         if chunk_method == "Satır Bazlı":
             # Her satırı ayrı chunk olarak al
             for idx, row in df.iterrows():
                 chunk_data = {}
-                
+
                 # Sütun verilerini ekle
                 for col in columns:
                     chunk_data[col] = str(row[col]) if pd.notna(row[col]) else ""
-                
+
                 # Text alanını oluştur
                 if include_columns_in_text:
                     chunk_text = ""
@@ -104,14 +104,14 @@ class ChunkingProcessor:
                 else:
                     # Sadece değerleri birleştir
                     chunk_data['text'] = " ".join([str(row[col]) for col in columns if pd.notna(row[col])])
-                
+
                 chunks.append(chunk_data)
-        
+
         elif chunk_method == "Sabit Boyut":
             # Birden fazla satırı birleştirerek chunk oluştur
             current_rows = []
             current_text = ""
-            
+
             for idx, row in df.iterrows():
                 row_text = ""
                 if include_columns_in_text:
@@ -120,7 +120,7 @@ class ChunkingProcessor:
                     row_text += "-" * 30 + "\n"
                 else:
                     row_text = " ".join([str(row[col]) for col in columns if pd.notna(row[col])]) + "\n"
-                
+
                 if len(current_text) + len(row_text) > chunk_size:
                     if current_rows:
                         chunk_data = {}
@@ -130,13 +130,13 @@ class ChunkingProcessor:
                             chunk_data[col] = values[0] if values else ""
                         chunk_data['text'] = current_text.strip()
                         chunks.append(chunk_data)
-                    
+
                     current_rows = [row.to_dict()]
                     current_text = row_text
                 else:
                     current_rows.append(row.to_dict())
                     current_text += row_text
-            
+
             # Kalan veriyi ekle
             if current_rows:
                 chunk_data = {}
@@ -145,19 +145,19 @@ class ChunkingProcessor:
                     chunk_data[col] = values[0] if values else ""
                 chunk_data['text'] = current_text.strip()
                 chunks.append(chunk_data)
-        
+
         else:  # Ayırıcı Bazlı
             # Grup halinde chunk'lama
             rows_per_chunk = max(1, chunk_size // 100)
             for i in range(0, len(df), rows_per_chunk):
                 chunk_rows = df.iloc[i:i + rows_per_chunk]
                 chunk_data = {}
-                
+
                 # İlk satırın sütun değerlerini temsili olarak ekle
                 first_row = chunk_rows.iloc[0]
                 for col in columns:
                     chunk_data[col] = str(first_row[col]) if pd.notna(first_row[col]) else ""
-                
+
                 # Text oluştur
                 chunk_text = ""
                 for idx, row in chunk_rows.iterrows():
@@ -167,40 +167,40 @@ class ChunkingProcessor:
                         chunk_text += "-" * 30 + "\n"
                     else:
                         chunk_text += " ".join([str(row[col]) for col in columns if pd.notna(row[col])]) + "\n"
-                
+
                 chunk_data['text'] = chunk_text.strip()
                 chunks.append(chunk_data)
-        
+
         return chunks
-    
+
     def create_chunks(
-        self, 
-        text: str, 
-        method: str, 
+        self,
+        text: str,
+        method: str,
         chunk_size: int = 500,
-        chunk_overlap: int = 50, 
+        chunk_overlap: int = 50,
         separator: str = "\n\n"
     ) -> List[Dict[str, Any]]:
         """Metni chunk'lara böl"""
         chunks = []
-        
+
         if method == "Sabit Boyut":
             size = max(1, chunk_size)
             effective_overlap = min(max(0, chunk_overlap), size - 1)
             step = size - effective_overlap
-            
+
             start = 0
             while start < len(text):
                 end = start + size
                 chunk_text = text[start:end]
                 chunks.append({'text': chunk_text})
                 start += step
-        
+
         elif method == "Ayırıcı Bazlı":
             size = max(1, chunk_size)
             parts = text.split(separator)
             current_chunk = ""
-            
+
             for part in parts:
                 candidate = (current_chunk + part + separator) if current_chunk else (part + separator)
                 if len(candidate) <= size:
@@ -221,10 +221,10 @@ class ChunkingProcessor:
                             chunks.append({'text': piece[:size].strip()})
                             piece = piece[size:]
                         current_chunk = piece
-            
+
             if current_chunk:
                 chunks.append({'text': current_chunk.strip()})
-            
+
             # Overlap uygula
             if chunk_overlap > 0 and len(chunks) > 1:
                 effective_overlap = min(max(0, chunk_overlap), size - 1)
@@ -233,12 +233,12 @@ class ChunkingProcessor:
                     prefix = prev_text[-effective_overlap:] if len(prev_text) >= effective_overlap else prev_text
                     new_text = (prefix + chunks[i]['text'])
                     chunks[i]['text'] = new_text[:size]
-        
+
         elif method == "Cümle Bazlı":
             size = max(1, chunk_size)
             sentences = text.replace('!', '.').replace('?', '.').split('.')
             current_chunk = ""
-            
+
             for sentence in sentences:
                 sentence = sentence.strip()
                 if not sentence:
@@ -261,10 +261,10 @@ class ChunkingProcessor:
                             chunks.append({'text': piece[:size].strip()})
                             piece = piece[size:]
                         current_chunk = piece
-            
+
             if current_chunk:
                 chunks.append({'text': current_chunk.strip()})
-            
+
             # Overlap uygula
             if chunk_overlap > 0 and len(chunks) > 1:
                 effective_overlap = min(max(0, chunk_overlap), size - 1)
@@ -273,9 +273,9 @@ class ChunkingProcessor:
                     prefix = prev_text[-effective_overlap:] if len(prev_text) >= effective_overlap else prev_text
                     new_text = (prefix + chunks[i]['text'])
                     chunks[i]['text'] = new_text[:size]
-        
+
         return chunks
-    
+
     def process_file(
         self,
         file_path: str,
@@ -289,7 +289,7 @@ class ChunkingProcessor:
         """Tek bir dosyayı işle"""
         try:
             file_extension = file_name.split('.')[-1].lower()
-            
+
             # Dosya türüne göre okuma
             if file_extension == 'pdf':
                 text, df, columns = self.read_pdf(file_path)
@@ -303,10 +303,10 @@ class ChunkingProcessor:
                 text, df, columns = self.read_excel(file_path)
             else:
                 return None, f"Desteklenmeyen dosya formatı: {file_extension}"
-            
+
             if text is None:
                 return None, f"Dosya okunamadı: {file_name}"
-            
+
             # Chunking işlemi
             if df is not None and columns is not None:
                 # Tablo verisi var
@@ -323,8 +323,8 @@ class ChunkingProcessor:
                 # Her chunk'a dosya adı ekle
                 for chunk in chunks:
                     chunk['filename'] = file_name
-            
+
             return chunks, None
-            
+
         except Exception as e:
             return None, str(e)

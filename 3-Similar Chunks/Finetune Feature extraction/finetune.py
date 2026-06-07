@@ -116,7 +116,7 @@ for tag, repo in dense_models.items():
 
     final_scores[tag] = {"top1":t1,"top5":t5,"top10":t10}
     path = os.path.join(SAVE_DIR, tag)
-    model.save(path);  print(f"Saved → {path}")
+    model.save(path);  print(f"Saved  {path}")
 
     model.to('cpu'); del model
     torch.cuda.empty_cache(); gc.collect()

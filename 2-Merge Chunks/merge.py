@@ -3,7 +3,7 @@
 JSON/JSONL klasörünü tarar, kayıtlardaki `text` alanından embedding üretir
 ve .npy olarak kaydeder. (İsteğe bağlı metadata .jsonl)
 
-⚙️ Yapılandırma değişkenleri bu dosyanın en üstündedir.
+ Yapılandırma değişkenleri bu dosyanın en üstündedir.
 """
 
 import os
@@ -19,7 +19,7 @@ from sentence_transformers import SentenceTransformer
 
 
 # =========================
-# 🔧 YAPILANDIRMA (burayı düzenleyin)
+# YAPILANDIRMA (burayı düzenleyin)
 # =========================
 INPUT_DIR      = r"C:\Users\ahmet\Desktop\RAG - cursor\2-Merge Chunks\deneme"             # JSON/JSONL dosyalarının bulunduğu klasör
 OUTPUT_NPY     = r"./embeddings/e5_embeddings.npy"  # Embedding matrisinin kaydedileceği .npy
@@ -232,7 +232,7 @@ def main():
         print(f"[i] Metadata yazılıyor -> {output_meta}")
         save_metadata_jsonl(metas, output_meta)
 
-    print("[✓] Tamamlandı.")
+    print("[] Tamamlandı.")
 
 
 if __name__ == "__main__":

@@ -2,8 +2,8 @@
 # all_methods_benchmark_full.py
 # =============================================================
 # WikiRAG‑TR,  TQuAD‑TR  ve  MSMARCO‑TR (örneklenmiş)
-#    • Yoğun (dense) modeller  +  BM25  +  TF‑IDF  +  Jaccard
-#    • Her yöntem için Top‑1 / Top‑5 / Top‑10 doğruluk
+# • Yoğun (dense) modeller  +  BM25  +  TF‑IDF  +  Jaccard
+# • Her yöntem için Top‑1 / Top‑5 / Top‑10 doğruluk
 # =============================================================
 
 RUN_WIKIRAG  = False     # 1000  soru - 5000 chunk
@@ -62,9 +62,9 @@ for tag, repo in dense_models.items():
             resume_download=True,
             allow_patterns=["*.safetensors", "*tokenizer.json", "*config.json", "*.json"],
         )
-        print(f"  ✓ {tag}")
+        print(f"   {tag}")
     except Exception as e:
-        print(f"  ✗ {tag} atlandı - ({e.__class__.__name__})")
+        print(f"   {tag} atlandı - ({e.__class__.__name__})")
 if not ok_models:
     sys.exit("Hiçbir yoğun model indirilemedi, çıkılıyor.")
 
@@ -132,7 +132,7 @@ def prepare_dataset(name, target_q=1000):
                 positive_count += 1
                 if positive_count % 50 == 0:
                     print(
-                        f"    ↳ {positive_count}/{len(needed_pids)} pozitif bulundu ({i + 1:,}/{len(corpus_list):,} tarandı)")
+                        f"     {positive_count}/{len(needed_pids)} pozitif bulundu ({i + 1:,}/{len(corpus_list):,} tarandı)")
 
         print(f"  • {positive_count}/{len(needed_pids)} pozitif passage bulundu")
 
@@ -156,7 +156,7 @@ def prepare_dataset(name, target_q=1000):
                         if added_random >= remaining_needed:
                             break
                         if added_random % 1000 == 0:
-                            print(f"    ↳ {added_random}/{remaining_needed} rastgele eklendi")
+                            print(f"     {added_random}/{remaining_needed} rastgele eklendi")
         else:
             # MSM_PASSAGE_SAMPLE None ise, tüm corpus'u ekle
             print("  • Tüm passage'lar ekleniyor...")
@@ -165,7 +165,7 @@ def prepare_dataset(name, target_q=1000):
                     pid2idx[p["pid"]] = len(selected_passages)
                     selected_passages.append(p["text"])
                     if (i + 1) % 50000 == 0:
-                        print(f"    ↳ {len(selected_passages):,} passage eklendi")
+                        print(f"     {len(selected_passages):,} passage eklendi")
 
         print(f"  • Toplam: {positive_count} pozitif + {len(selected_passages) - positive_count:,} diğer passage")
 
@@ -183,7 +183,7 @@ def prepare_dataset(name, target_q=1000):
                     missing_count += 1
 
         if missing_count > 0:
-            print(f"  ⚠ {missing_count} query'nin pozitif passage'ı bulunamadı")
+            print(f"   {missing_count} query'nin pozitif passage'ı bulunamadı")
 
         print(f"MSMARCO‑TR örnek: {len(Q)} soru, {len(selected_passages):,} passage.")
 
@@ -225,7 +225,7 @@ for ds_name in datasets_to_run:
             model = SentenceTransformer(path, device=device)
             metrics[tag] = eval_dense(model, C, Q, Y, K)
         except Exception as e:
-            print(f"    ↳ {tag} atlandı ({e.__class__.__name__})")
+            print(f"     {tag} atlandı ({e.__class__.__name__})")
         finally:
             if model is not None:
                 try: model.to("cpu")
@@ -288,5 +288,5 @@ for ds_name in datasets_to_run:
     plt.title(f"{ds_name} - Yöntem Karşılaştırması (Top‑10’a kadar)")
     plt.legend(); plt.tight_layout(); plt.show()
 
-print("\n✓ Tüm işlemler tamamlandı.")
+print("\n Tüm işlemler tamamlandı.")
 

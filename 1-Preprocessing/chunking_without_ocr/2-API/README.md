@@ -2,7 +2,7 @@
 
 Bu API, dokümanları anlamlı parçalara (chunk) bölen bir servistir. PDF, DOCX, TXT, CSV ve Excel dosyalarını destekler.
 
-## 🚀 Hızlı Başlangıç
+## Hızlı Başlangıç
 
 ### 1. Gereksinimler
 - Python 3.11+
@@ -20,12 +20,12 @@ uvicorn main:app --reload
 
 API şu adreste çalışacaktır: http://localhost:8000
 
-## 📚 API Dokümantasyonu
+## API Dokümantasyonu
 
 - Swagger UI: http://localhost:8000/docs
 - ReDoc: http://localhost:8000/redoc
 
-## 🔧 Temel Kullanım
+## Temel Kullanım
 
 ### Dosya İşleme (Async)
 ```bash
@@ -47,7 +47,7 @@ curl -X POST "http://localhost:8000/api/v1/process-sync" \
   -F "file=@dokuman.txt"
 ```
 
-## 🏗️ Production Deployment
+## Production Deployment
 
 ### Docker ile Deployment
 
@@ -69,7 +69,7 @@ docker-compose up -d
 docker-compose logs -f
 ```
 
-## ⚡ Performans Optimizasyonları
+## Performans Optimizasyonları
 
 ### 1. Multi-Worker Deployment
 ```bash
@@ -89,7 +89,7 @@ import redis
 cache = redis.Redis(host='localhost', port=6379, db=0)
 ```
 
-## 🔍 Monitoring
+## Monitoring
 
 ### Prometheus Metrics
 ```python
@@ -100,14 +100,14 @@ Instrumentator().instrument(app).expose(app)
 
 Metrikler: http://localhost:8000/metrics
 
-## 🛡️ Güvenlik
+## Güvenlik
 
 1. **Rate Limiting**: Nginx'te yapılandırılmıştır
 2. **CORS**: Ayarlanabilir origin'ler
 3. **File Size Limit**: Varsayılan 10MB
 4. **Input Validation**: Pydantic modelleri ile
 
-## 📊 Endpoint'ler
+## Endpoint'ler
 
 | Endpoint | Method | Açıklama |
 |----------|--------|----------|
@@ -119,18 +119,18 @@ Metrikler: http://localhost:8000/metrics
 | `/api/v1/status/{job_id}` | GET | İşlem durumu |
 | `/api/v1/export/{job_id}` | GET | Sonuçları dışa aktar |
 
-## 🔧 Konfigürasyon
+## Konfigürasyon
 
 `config.env` dosyasını düzenleyerek ayarları değiştirebilirsiniz.
 
-## 💡 İpuçları
+## İpuçları
 
 1. **Büyük dosyalar için**: Async endpoint kullanın
 2. **Toplu işlemler için**: Batch endpoint kullanın (max 10 dosya)
 3. **CPU kullanımı**: Worker sayısını CPU çekirdek sayısına göre ayarlayın
 4. **Memory kullanımı**: Chunk boyutunu ve overlap'i optimize edin
 
-## 🐛 Sorun Giderme
+## Sorun Giderme
 
 1. **Memory hatası**: Chunk boyutunu azaltın
 2. **Timeout hatası**: Nginx/Gunicorn timeout değerlerini artırın

@@ -1,6 +1,6 @@
 # Production Deployment Kılavuzu
 
-## 🚀 Neden FastAPI?
+## Neden FastAPI?
 
 Bu uygulama için FastAPI seçilmesinin nedenleri:
 
@@ -10,7 +10,7 @@ Bu uygulama için FastAPI seçilmesinin nedenleri:
 4. **Otomatik Dokümantasyon**: Swagger/OpenAPI desteği
 5. **Type Safety**: Pydantic ile veri doğrulama
 
-## 📊 Performans Optimizasyonları
+## Performans Optimizasyonları
 
 ### 1. Multi-Process Deployment
 
@@ -55,7 +55,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 client = AsyncIOMotorClient('mongodb://localhost:27017', maxPoolSize=50)
 ```
 
-## 🔧 Sistem Optimizasyonları
+## Sistem Optimizasyonları
 
 ### Linux Kernel Tuning
 
@@ -85,19 +85,19 @@ events {
 http {
     # Caching
     proxy_cache_path /var/cache/nginx levels=1:2 keys_zone=api_cache:10m max_size=1g;
-    
+
     # Compression
     gzip on;
     gzip_comp_level 6;
     gzip_types application/json text/plain;
-    
+
     # Keep-alive
     keepalive_requests 100;
     keepalive_timeout 65;
 }
 ```
 
-## 📈 Monitoring Stack
+## Monitoring Stack
 
 ### 1. Prometheus + Grafana
 
@@ -132,7 +132,7 @@ async def startup():
     Instrumentator().instrument(app).expose(app)
 ```
 
-## 🛡️ Güvenlik Önlemleri
+## Güvenlik Önlemleri
 
 ### 1. Rate Limiting
 
@@ -160,13 +160,13 @@ MAX_FILE_SIZE = 10 * 1024 * 1024  # 10MB
 def validate_file(file: UploadFile):
     if file.size > MAX_FILE_SIZE:
         raise HTTPException(400, "Dosya çok büyük")
-    
+
     ext = file.filename.split('.')[-1].lower()
     if ext not in ALLOWED_EXTENSIONS:
         raise HTTPException(400, "Geçersiz dosya tipi")
 ```
 
-## 🏗️ Deployment Stratejileri
+## Deployment Stratejileri
 
 ### 1. Blue-Green Deployment
 
@@ -222,7 +222,7 @@ spec:
           periodSeconds: 10
 ```
 
-## 📊 Benchmark Sonuçları
+## Benchmark Sonuçları
 
 Tipik performans değerleri (4 CPU, 8GB RAM):
 
@@ -233,7 +233,7 @@ Tipik performans değerleri (4 CPU, 8GB RAM):
 | DOCX | 2MB | ~200ms | 20 |
 | CSV | 10MB | ~1s | 4 |
 
-## 🔍 Debugging ve Profiling
+## Debugging ve Profiling
 
 ### 1. Performance Profiling
 
@@ -244,9 +244,9 @@ import pstats
 def profile_endpoint():
     profiler = cProfile.Profile()
     profiler.enable()
-    
+
     # İşlem
-    
+
     profiler.disable()
     stats = pstats.Stats(profiler)
     stats.sort_stats('cumulative')
@@ -264,7 +264,7 @@ def process_large_file():
     pass
 ```
 
-## 💡 Best Practices
+## Best Practices
 
 1. **Connection Pooling**: Veritabanı bağlantıları için pool kullanın
 2. **Caching**: Sık kullanılan sonuçları Redis'te cache'leyin
@@ -275,7 +275,7 @@ def process_large_file():
 7. **Error Handling**: Global exception handler kullanın
 8. **Documentation**: API dokümantasyonunu güncel tutun
 
-## 🚨 Sorun Giderme
+## Sorun Giderme
 
 ### High CPU Usage
 - Worker sayısını azaltın

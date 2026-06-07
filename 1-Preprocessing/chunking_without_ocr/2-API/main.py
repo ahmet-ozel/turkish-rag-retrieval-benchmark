@@ -28,7 +28,7 @@ processing_status = {}
 
 class ChunkingRequest(BaseModel):
     method: str = Field(
-        default="Sabit Boyut", 
+        default="Sabit Boyut",
         description="Chunking yöntemi",
         enum=["Sabit Boyut", "Ayırıcı Bazlı", "Cümle Bazlı", "Satır Bazlı"]
     )
@@ -96,7 +96,7 @@ async def process_document(
 ):
     """
     Doküman yükle ve chunking işlemini başlat
-    
+
     - **file**: Yüklenecek dosya (PDF, DOCX, TXT, CSV, XLSX)
     - **method**: Chunking yöntemi
     - **chunk_size**: Her chunk'ın maksimum karakter sayısı
@@ -104,20 +104,20 @@ async def process_document(
     - **separator**: Ayırıcı bazlı yöntem için kullanılacak karakter
     - **include_columns_in_text**: CSV/Excel için sütun adlarını text'e ekle
     """
-    
+
     # Dosya uzantısını kontrol et
     allowed_extensions = ['txt', 'pdf', 'docx', 'csv', 'xlsx', 'xls']
     file_extension = file.filename.split('.')[-1].lower()
-    
+
     if file_extension not in allowed_extensions:
         raise HTTPException(
             status_code=400,
             detail=f"Desteklenmeyen dosya formatı: {file_extension}. Desteklenen formatlar: {', '.join(allowed_extensions)}"
         )
-    
+
     # Benzersiz job ID oluştur
     job_id = str(uuid.uuid4())
-    
+
     # İşlem durumunu başlat
     processing_status[job_id] = {
         "status": "processing",
@@ -128,7 +128,7 @@ async def process_document(
         "created_at": datetime.now().isoformat(),
         "updated_at": datetime.now().isoformat()
     }
-    
+
     # Arka planda işlemi başlat
     background_tasks.add_task(
         process_file_async,
@@ -142,7 +142,7 @@ async def process_document(
             include_columns_in_text=include_columns_in_text
         )
     )
-    
+
     return ProcessingResponse(
         job_id=job_id,
         message="Dosya işleme başlatıldı",
@@ -154,16 +154,16 @@ async def process_file_async(job_id: str, file: UploadFile, request: ChunkingReq
     try:
         # Dosyayı geçici olarak kaydet
         temp_file_path = f"/tmp/{job_id}_{file.filename}"
-        
+
         async with aiofiles.open(temp_file_path, 'wb') as temp_file:
             content = await file.read()
             await temp_file.write(content)
-        
+
         # İlerleme güncelle
         processing_status[job_id]["progress"] = 0.2
         processing_status[job_id]["message"] = "Dosya okunuyor..."
         processing_status[job_id]["updated_at"] = datetime.now().isoformat()
-        
+
         # Chunking işlemini yap
         chunks, error = await asyncio.to_thread(
             chunking_processor.process_file,
@@ -175,11 +175,11 @@ async def process_file_async(job_id: str, file: UploadFile, request: ChunkingReq
             request.separator,
             request.include_columns_in_text
         )
-        
+
         # Geçici dosyayı sil
         if os.path.exists(temp_file_path):
             os.remove(temp_file_path)
-        
+
         if error:
             processing_status[job_id]["status"] = "error"
             processing_status[job_id]["error"] = error
@@ -198,14 +198,14 @@ async def process_file_async(job_id: str, file: UploadFile, request: ChunkingReq
                     "chunk_overlap": request.chunk_overlap
                 }
             }
-            
+
             processing_status[job_id]["status"] = "completed"
             processing_status[job_id]["progress"] = 1.0
             processing_status[job_id]["message"] = "İşlem tamamlandı"
             processing_status[job_id]["result"] = result
-        
+
         processing_status[job_id]["updated_at"] = datetime.now().isoformat()
-        
+
     except Exception as e:
         processing_status[job_id]["status"] = "error"
         processing_status[job_id]["error"] = str(e)
@@ -215,15 +215,15 @@ async def process_file_async(job_id: str, file: UploadFile, request: ChunkingReq
 @app.get("/api/v1/status/{job_id}", response_model=ProcessingStatus)
 async def get_processing_status(job_id: str):
     """İşlem durumunu sorgula"""
-    
+
     if job_id not in processing_status:
         raise HTTPException(
             status_code=404,
             detail="İşlem bulunamadı"
         )
-    
+
     status = processing_status[job_id]
-    
+
     return ProcessingStatus(
         job_id=job_id,
         status=status["status"],
@@ -246,39 +246,39 @@ async def process_document_sync(
 ):
     """
     Dokümanı senkron olarak işle (küçük dosyalar için)
-    
-    ⚠️ Büyük dosyalar için /api/v1/process endpoint'ini kullanın
+
+     Büyük dosyalar için /api/v1/process endpoint'ini kullanın
     """
-    
+
     # Dosya uzantısını kontrol et
     allowed_extensions = ['txt', 'pdf', 'docx', 'csv', 'xlsx', 'xls']
     file_extension = file.filename.split('.')[-1].lower()
-    
+
     if file_extension not in allowed_extensions:
         raise HTTPException(
             status_code=400,
             detail=f"Desteklenmeyen dosya formatı: {file_extension}"
         )
-    
+
     # Dosya boyutunu kontrol et (5MB limit)
     file.file.seek(0, 2)
     file_size = file.file.tell()
     file.file.seek(0)
-    
+
     if file_size > 5 * 1024 * 1024:  # 5MB
         raise HTTPException(
             status_code=413,
             detail="Dosya çok büyük. Lütfen async endpoint kullanın: /api/v1/process"
         )
-    
+
     try:
         # Geçici dosya oluştur
         temp_file_path = f"/tmp/sync_{uuid.uuid4()}_{file.filename}"
-        
+
         content = await file.read()
         with open(temp_file_path, 'wb') as temp_file:
             temp_file.write(content)
-        
+
         # Chunking işlemi
         chunks, error = await asyncio.to_thread(
             chunking_processor.process_file,
@@ -290,14 +290,14 @@ async def process_document_sync(
             separator,
             include_columns_in_text
         )
-        
+
         # Geçici dosyayı sil
         if os.path.exists(temp_file_path):
             os.remove(temp_file_path)
-        
+
         if error:
             raise HTTPException(status_code=400, detail=error)
-        
+
         return {
             "success": True,
             "filename": file.filename,
@@ -309,7 +309,7 @@ async def process_document_sync(
                 "method": method
             }
         }
-        
+
     except HTTPException:
         raise
     except Exception as e:
@@ -330,24 +330,24 @@ async def batch_process_documents(
 ):
     """
     Birden fazla dokümanı toplu olarak işle
-    
+
     Maksimum 10 dosya aynı anda işlenebilir.
     """
-    
+
     if len(files) > 10:
         raise HTTPException(
             status_code=400,
             detail="Maksimum 10 dosya aynı anda işlenebilir"
         )
-    
+
     # Her dosya için job oluştur
     jobs = []
-    
+
     for file in files:
         # Dosya uzantısını kontrol et
         file_extension = file.filename.split('.')[-1].lower()
         allowed_extensions = ['txt', 'pdf', 'docx', 'csv', 'xlsx', 'xls']
-        
+
         if file_extension not in allowed_extensions:
             jobs.append({
                 "filename": file.filename,
@@ -355,10 +355,10 @@ async def batch_process_documents(
                 "error": f"Desteklenmeyen format: {file_extension}"
             })
             continue
-        
+
         # Job ID oluştur
         job_id = str(uuid.uuid4())
-        
+
         # İşlem durumunu başlat
         processing_status[job_id] = {
             "status": "processing",
@@ -369,7 +369,7 @@ async def batch_process_documents(
             "created_at": datetime.now().isoformat(),
             "updated_at": datetime.now().isoformat()
         }
-        
+
         # Arka plan görevini ekle
         background_tasks.add_task(
             process_file_async,
@@ -383,13 +383,13 @@ async def batch_process_documents(
                 include_columns_in_text=include_columns_in_text
             )
         )
-        
+
         jobs.append({
             "filename": file.filename,
             "job_id": job_id,
             "status_url": f"/api/v1/status/{job_id}"
         })
-    
+
     return {
         "message": f"{len(files)} dosya işleme alındı",
         "jobs": jobs
@@ -401,21 +401,21 @@ async def export_chunks(
     format: str = Query(default="json", enum=["json", "txt", "csv"])
 ):
     """İşlem sonuçlarını farklı formatlarda dışa aktar"""
-    
+
     if job_id not in processing_status:
         raise HTTPException(status_code=404, detail="İşlem bulunamadı")
-    
+
     status = processing_status[job_id]
-    
+
     if status["status"] != "completed":
         raise HTTPException(
             status_code=400,
             detail=f"İşlem henüz tamamlanmadı. Durum: {status['status']}"
         )
-    
+
     result = status["result"]
     chunks = result["chunks"]
-    
+
     if format == "json":
         return JSONResponse(
             content=result,
@@ -423,7 +423,7 @@ async def export_chunks(
                 "Content-Disposition": f"attachment; filename=chunks_{job_id}.json"
             }
         )
-    
+
     elif format == "txt":
         output = []
         for i, chunk in enumerate(chunks, 1):
@@ -433,9 +433,9 @@ async def export_chunks(
             output.append("İçerik:")
             output.append(chunk.get('text', ''))
             output.append("\n" + "=" * 50 + "\n")
-        
+
         content = "\n".join(output)
-        
+
         return StreamingResponse(
             io.StringIO(content),
             media_type="text/plain",
@@ -443,21 +443,21 @@ async def export_chunks(
                 "Content-Disposition": f"attachment; filename=chunks_{job_id}.txt"
             }
         )
-    
+
     elif format == "csv":
         import csv
         output = io.StringIO()
         writer = csv.writer(output)
-        
+
         # Header
         headers = ['chunk_id', 'filename', 'text', 'length']
         if chunks and isinstance(chunks[0], dict):
             # Ek sütunları bul
             extra_columns = [k for k in chunks[0].keys() if k not in ['text', 'filename']]
             headers.extend(extra_columns)
-        
+
         writer.writerow(headers)
-        
+
         # Data
         for i, chunk in enumerate(chunks, 1):
             row = [
@@ -466,16 +466,16 @@ async def export_chunks(
                 chunk.get('text', ''),
                 len(chunk.get('text', ''))
             ]
-            
+
             # Ek sütunları ekle
             if 'extra_columns' in locals():
                 for col in extra_columns:
                     row.append(chunk.get(col, ''))
-            
+
             writer.writerow(row)
-        
+
         output.seek(0)
-        
+
         return StreamingResponse(
             output,
             media_type="text/csv",

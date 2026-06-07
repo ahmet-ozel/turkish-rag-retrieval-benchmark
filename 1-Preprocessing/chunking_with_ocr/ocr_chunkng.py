@@ -148,7 +148,7 @@ def qwen_ocr_image(pil_image: Image.Image,
         )
 
     out = processor.batch_decode(generated_ids, skip_special_tokens=True)[0]
-    # Temizlik — şablon kalıntıları vs.
+    # Temizlik - şablon kalıntıları vs.
     for token in ["<|system|>", "<|user|>", "<|assistant|>", "<|im_start|>", "<|im_end|>"]:
         out = out.replace(token, "")
     # Bazı durumlarda 'assistant' kelimesinden sonra metin gelebilir
@@ -202,7 +202,7 @@ def read_pdf_ocr(file, ocr_enabled: bool, ocr_mode: str, render_scale: float, oc
         else:
             final_text = extracted
 
-        # Sayfa başlığı eklemek isteğe bağlı — chunking'e yardımcı olur
+        # Sayfa başlığı eklemek isteğe bağlı - chunking'e yardımcı olur
         text_parts.append(f"[SAYFA {i+1}]\n{final_text}\n")
 
     return "\n".join(text_parts), None, None
@@ -650,7 +650,7 @@ def export_chunks(chunks: List[Dict], format: str):
         return df.to_csv(index=False)
 
 # =========================
-# UI — Sidebar
+# UI - Sidebar
 # =========================
 with st.sidebar:
     st.header("⚙️ Chunking & OCR Ayarları")
@@ -837,7 +837,7 @@ else:
 st.markdown("---")
 st.markdown("""
 <div style='text-align: center; color: #666;'>
-    <small>📄 Gelişmiş Doküman Chunking (OCR) v4.0 — Qwen/Qwen2.5-VL-7B-Instruct entegrasyonu</small>
+    <small>📄 Gelişmiş Doküman Chunking (OCR) v4.0 - Qwen/Qwen2.5-VL-7B-Instruct entegrasyonu</small>
 </div>
 """, unsafe_allow_html=True)
 

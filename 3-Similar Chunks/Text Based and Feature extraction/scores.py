@@ -6,9 +6,9 @@
 #    • Her yöntem için Top‑1 / Top‑5 / Top‑10 doğruluk
 # =============================================================
 
-RUN_WIKIRAG  = False     # 1000  soru – 5000 chunk
-RUN_TQUAD    = False     # 1190  soru – ~600 paragraf
-RUN_MSMARCO  = True      # 1000* soru – 100k passage  (örnek)
+RUN_WIKIRAG  = False     # 1000  soru - 5000 chunk
+RUN_TQUAD    = False     # 1190  soru - ~600 paragraf
+RUN_MSMARCO  = True      # 1000* soru - 100k passage  (örnek)
 
 MSM_PASSAGE_SAMPLE = 10_000   # None yapın = tüm passage'lar
 MSM_QUERY_SAMPLE   = 100      # None yapın = tüm query'ler
@@ -64,7 +64,7 @@ for tag, repo in dense_models.items():
         )
         print(f"  ✓ {tag}")
     except Exception as e:
-        print(f"  ✗ {tag} atlandı – ({e.__class__.__name__})")
+        print(f"  ✗ {tag} atlandı - ({e.__class__.__name__})")
 if not ok_models:
     sys.exit("Hiçbir yoğun model indirilemedi, çıkılıyor.")
 
@@ -285,7 +285,7 @@ for ds_name in datasets_to_run:
     plt.bar(x+w,[metrics[m]["top10"]for m in lbl],w,label="Top‑10")
     plt.xticks(x,lbl,rotation=45,ha="right",fontsize=8)
     plt.ylabel("Accuracy"); plt.ylim(0,1)
-    plt.title(f"{ds_name} – Yöntem Karşılaştırması (Top‑10’a kadar)")
+    plt.title(f"{ds_name} - Yöntem Karşılaştırması (Top‑10’a kadar)")
     plt.legend(); plt.tight_layout(); plt.show()
 
 print("\n✓ Tüm işlemler tamamlandı.")
